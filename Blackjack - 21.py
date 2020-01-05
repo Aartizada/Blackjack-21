@@ -1,9 +1,10 @@
 import random
+from IPython.display import clear_output
 suits = ('Hearts', 'Diamonds', 'Spades', 'Clubs')
 ranks = ('Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Jack', 'Queen', 'King', 'Ace')
 values = {'Two':2, 'Three':3, 'Four':4, 'Five':5, 'Six':6, 'Seven':7, 'Eight':8, 'Nine':9, 'Ten':10, 'Jack':10,
          'Queen':10, 'King':10, 'Ace':11}
-playing = True
+
 
 class Card:
     def __init__(self,suit,rank):
@@ -71,7 +72,7 @@ class Hand:
 
 class Chips:
     def __init__(self):
-        self.total = 100  # This can be set to a default value or supplied by a user input
+        self.total = 100
         self.bet = 0
     def win_bet(self):
         self.total += self.bet
@@ -79,18 +80,6 @@ class Chips:
         self.total -= self.bet
 
 # Function time.
-def take_bet(chips):
-    while True:
-        try:
-            chips.bet = int(input('How much would you like to bet, hotshot? '))
-        except ValueError:
-            print('Sorry, your bet must be an integer!')
-        else:
-            if chips.bet > chips.total:
-                print("Sorry, you don't have that much money.",chips.total)
-            else:
-                break
-
 def hit(deck,hand):
     hand.add_card(deck.deal())
     hand.adjust_for_ace()
@@ -108,7 +97,6 @@ def hit_or_stand(deck,hand):
             print("Sorry, please try again.")
             continue
         break
-
 def show_some(player,dealer):
     print("\nDealer's Hand:")
     print(" <card hidden>")
@@ -139,20 +127,29 @@ def dealer_wins(player,dealer,chips):
 
 def push(player,dealer):
     print("Dealer and Player tie! Push on.")
-
-while True:
+    
+def take_bet(chips):
+    clear_output()
     print('Welcome to Adams BlackJack!')
     print('Get as close to 21 as you can without going over!')
-    print('Dealer hits until it reaches 17.')
-    print('Number cards count as the value shown.')
-    print('Faces are 10.')
-    print('Aces count as 1 or 11.')
-    print('You start with 100 chips.')
-    print('Good luck to you.')
-    print('Hopefully you go home rich.')
+    print('You have '+str(player_chips.total)+' chips.')
+    
+    while True:
+        try:
+            chips.bet = int(input('How much would you like to bet, hotshot? '))
+        except ValueError:
+            print('Sorry, your bet must be an integer!')
+        else:
+            if chips.bet > chips.total:
+                print("Sorry, you don't have that much money.",chips.total)
+            else:
+                break
+playing = True
+while True:
 
     deck = Deck()
     deck.shuffle()
+    
 
     player_hand = Hand()
     player_hand.add_card(deck.deal())
@@ -163,6 +160,7 @@ while True:
     dealer_hand.add_card(deck.deal())
 
     player_chips = Chips()
+    print("\nYour chips: ",player_chips.total)
 
     take_bet(player_chips)
     show_some(player_hand,dealer_hand)
